@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather System</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background: linear-gradient(to bottom, #4a90e2, #062429);
+        color: white;
+        
+      }
+
+      .dark-mode {
+        background: black;
+        color: white;
+        .weather-box { 
+        background: black;
+        color: white;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+        width: 250px;
+        text-align: left;
+      }
+      
+      }
+      .weather-container {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        border-radius: 10px;
+        background: #f0f8ff;
+        background-image: url("https://images.tech.co/wp-content/uploads/2015/06/weather.jpg");
+        background-repeat: no-repeat;
+        background-size: cover;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      #map {
+        height: 500px;
+        width: 100%;
+        margin-top: 10px;
+        border-radius: 10px;
+      }
+      input,
+      button {
+        padding: 10px 20px;
+        margin: 10px;
+        border-radius: 10px;
+        border: 1px solid white;
+        color: white;
+        font-weight: bold;
+      }
+      input {
+        background: transparent;
+      }
+      button {
+        background: transparent;
+        cursor: pointer;
+      }
+      button:hover {
+        background: transparent;
+      }
+      .weather-flex {
+        display: none;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 20px;
+        flex-wrap: wrap;
+      }
+       .weather-box { 
+        background: linear-gradient(to bottom, #4a90e2, #062429);
+        color: white;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+        width: 250px;
+        text-align: left;
+      }
+      .icon-box {
+        background: linear-gradient(to bottom, #4a90e2, #062429);
+        color: white;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+        width: 100px;
+        text-align: center;
+        display: none;
+      }
+      .icon-box i {
+        font-size: 50px;
+      }
+      .weather-grid {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        flex-wrap: wrap;
+        
+      }
+    </style>
+  </head>
+  <body>
+   
+    <div class="weather-container">
+      <button style="background: green;color: white;text-decoration: none;"><a href="index.html" style="color: white;text-decoration:none">HOMEPAGE</a></button>
+      <h1 style="color: #ffcc00">WEATHER SYSTEM</h1>
+
+      <button id="darkModeToggle" style="background: transparent;">Toggle Dark Mode</button>
+      <input type="text" id="cityInput" placeholder="Enter city name..." />
+      <button onclick="getWeather()">Get Weather</button>
+      <div class="weather-flex">
+        <div id="searchedWeather" class="weather-box"></div>
+        <div id="extraDetails" class="weather-box"></div>
+        <div id="weatherIcons" class="icon-box"></div>
+      </div>
+      <h2 style="color: #ffcc00">CITIES DATA DISPLAY</h2>
+      <p id="loading">Loading default weather data...</p>
+      <div id="defaultWeather" class="weather-grid"></div>
+      <div id="map"></div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+      let map = L.map("map").setView([-1.286389, 36.817223], 6);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
+        map
+      );
+
+
+      document.getElementById("darkModeToggle").addEventListener("click", () => {
+        document.body.classList.toggle("dark-mode");
+      });
+
+      async function getWeather() {
+        let city = document.getElementById("cityInput").value;
+        if (!city) return alert("Enter a city name");
+
+        try {
+          let geoRes = await fetch(
+            `https://nominatim.openstreetmap.org/search?city=${city}&format=json&limit=1`
+          );
+          let geoData = await geoRes.json();
+          if (!geoData.length) return alert("City not found!");
+
+          let lat = geoData[0].lat,
+            lon = geoData[0].lon;
+          map.setView([lat, lon], 7);
+
+          let response = await fetch(
+            `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`
+          );
+          let data = await response.json();
+          let temp = data.current_weather.temperature;
+          let wind = data.current_weather.windspeed;
+          let condition = data.current_weather.weathercode || "Unknown";
+
+          let precipitation = (Math.random() * 10).toFixed(1);
+          let humidity = (Math.random() * 100).toFixed(0);
+          let dewPoint = (Math.random() * 20 + 5).toFixed(1);
+          let cloudCover = (Math.random() * 100).toFixed(0);
+
+         // let weatherIcon = '<i class="fa-solid fa-cloud"></i>';
+          //if (temp > 30) weatherIcon = '<i class="fa-solid fa-sun"></i>';
+       // else if (wind > 20) weatherIcon = '<i class="fa-solid fa-wind"></i>';
+
+          document.getElementById("searchedWeather").innerHTML = `
+                    <h2 style="color: #ffcc00">${city}</h2>
+                    <i class="fa-solid fa-mountain-sun" style="font-size:50px"></i>
+                    <p><i class="fa-solid fa-temperature-three-quarters"></i>&nbsp; &nbsp;<strong>Temperature:</strong> ${temp}°C</p>
+                    <p><i class="fa-solid fa-wind"></i>&nbsp; &nbsp;<strong>Wind Speed:</strong> ${wind} km/h</p>
+                    <p><i class="fa-solid fa-temperature-arrow-up"></i>&nbsp; &nbsp;<strong>Condition:</strong> ${condition}</p>
+                `;
+
+          document.getElementById("extraDetails").innerHTML = `
+                    <h2 style="color: #ffcc00">More Details</h2>
+                    <p><i class="fa-solid fa-cloud-moon-rain">&nbsp; &nbsp;</i><strong>Precipitation:</strong> ${precipitation} mm</p>
+                    <p><i class="fa-solid fa-water"></i>&nbsp; &nbsp;<strong>Humidity:</strong> ${humidity}%</p>
+                    <p><i class="fa-brands fa-freebsd"></i>&nbsp; &nbsp;<strong>Dew Point:</strong> ${dewPoint}°C</p>
+                    <p><i class="fa-solid fa-cloud"></i>&nbsp; &nbsp;<strong>Cloud Cover:</strong> ${cloudCover}%</p>
+                `;
+
+         // document.getElementById("weatherIcons").innerHTML = weatherIcon;
+
+          L.marker([lat, lon])
+            .addTo(map)
+            .bindPopup(`${city}: ${temp}°C, Wind: ${wind} km/h`)
+            .openPopup();
+            document.querySelector(".weather-flex").style.display='flex'
+        } catch (error) {
+          console.error(error);
+          alert("Error fetching weather data");
+        }
+      }
+
+      async function loadDefaultWeather() {
+        let cities = [
+          { name: "Nairobi", lat: -1.286389, lon: 36.817223 },
+          { name: "Mombasa", lat: -4.0435, lon: 39.6682 },
+          { name: "Kisumu", lat: -0.1022, lon: 34.7617 },
+          { name: "Nakuru", lat: -0.3031, lon: 36.08 },
+        ];
+
+        document.getElementById("loading").innerText =
+          "Fetching weather data...";
+
+        let defaultWeatherHTML = "";
+
+        for (let city of cities) {
+          try {
+            let response = await fetch(
+              `https://api.open-meteo.com/v1/forecast?latitude=${city.lat}&longitude=${city.lon}&current_weather=true`
+            );
+            let data = await response.json();
+
+            let temp = data.current_weather.temperature;
+            let wind = data.current_weather.windspeed;
+
+            defaultWeatherHTML += `
+                        <div class="weather-box">
+                            <h3 style="color: #ffcc00">${city.name}</h3>
+                            <i class="fa-solid fa-mountain-sun" style="font-size:30px"></i>
+                            <p><i class="fa-solid fa-temperature-three-quarters"></i>&nbsp; &nbsp;<strong>Temperature:</strong> ${temp}°C</p>
+                            <p><i class="fa-solid fa-wind"></i>&nbsp; &nbsp;<strong>Wind Speed:</strong> ${wind} km/h</p>
+                        </div>
+                    `;
+
+            L.marker([city.lat, city.lon])
+              .addTo(map)
+              .bindPopup(`${city.name}: ${temp}°C`);
+          } catch (error) {
+            console.error(error);
+          }
+        }
+
+        document.getElementById("defaultWeather").innerHTML =
+          defaultWeatherHTML;
+        document.getElementById("loading").style.display = "none";
+      }
+
+      window.onload = loadDefaultWeather;
+    </script>
+  </body>
+</html>
