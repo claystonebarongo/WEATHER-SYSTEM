@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    />
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+      }
+      body {
+        background: linear-gradient(to bottom, #4a90e2, #062429);
+        background: #062429;
+        color: white;
+        height: 100vh;
+        font-family: "ubuntu", sans-serif;
+        letter-spacing: 0cm;
+      }
+      .line1 {
+        display: flex;
+        gap: 15%;
+        padding-top: 2%;
+      }
+      .line2 {
+        display: flex;
+        gap: 5%;
+        margin-left: 16%;
+        margin-right: 16%;
+        margin-top: 2%;
+      }
+      .line2 i {
+        font-size: 3vw;
+        margin-top: 2%;
+      }
+      .line2 h1 {
+        color: #ffcc00;
+        font-size: 3vw;
+        font-weight: 500;
+      }
+      .line2 p {
+        font-size: 2vw;
+      }
+      .time {
+        margin-top: 1%;
+        margin-left: 4%;
+        margin-bottom: 8%;
+      }
+      .realTime {
+        font-size: 6vw;
+        font-weight: 600;
+      }
+      .date {
+        font-size: 3vw;
+        font-weight: 400;
+      }
+      .container {
+        width: 80vw;
+        background: rgba(255, 255, 255, 0.05);
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+        margin: auto;
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+      }
+      .one {
+        margin-left: 10%;
+      }
+      .hide ul {
+        display: flex;
+        list-style: none;
+        gap: 4%;
+        justify-content: center;
+        margin-top: 1%;
+      }
+      .hide button {
+        background-color: transparent;
+        border: 1px solid #ffcc00;
+        color: #ffcc00;
+        padding: 10px 15px;
+        border-radius: 10px;
+      }
+      .sidebar {
+        z-index: 999;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        display: none;
+        width: 100vw;
+        background-color: linear-gradient(to bottom, #4a90e2, #062429);
+        text-align: center;
+        backdrop-filter: blur(20px);
+      }
+      .sidebar ul {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+      }
+      .sidebar ul li {
+        margin-bottom: 10%;
+      }
+      .sidebar button {
+        background-color: transparent;
+        border: 1px solid #ffcc00;
+        color: #ffcc00;
+        padding: 10px 15px;
+        border-radius: 10px;
+      }
+      .sidebar a {
+        text-decoration: none;
+        color: #ffcc00;
+      }
+      .hide button i,
+      .sidebar button i {
+        font-size: 20px;
+      }
+      .hide a {
+        position: relative;
+        text-decoration: none;
+        color: #ffcc00;
+        font-size: 20px;
+      }
+      .yoo {
+        display: none;
+      }
+      .hide a:after {
+        content: "";
+        position: absolute;
+        width: 2%;
+        height: 2px;
+        background-color: none;
+        bottom: -4px;
+        left: 0;
+        transition: 0.5s ease-in-out;
+      }
+      .hide a:hover:after {
+        background-color: crimson;
+        width: 100%;
+      }
+      @media (max-width: 768px) {
+        .container {
+          width: 90%;
+          padding: 15px;
+        }
+        .time {
+          margin-bottom: 20%;
+        }
+        .line1 {
+          gap: 10%;
+        }
+        .line1 i {
+          font-size: 60px;
+        }
+        .line1 h1,
+        .line1 h3 {
+          font-size: 5vw;
+        }
+        .line2 {
+          flex-wrap: wrap;
+          gap: 10px;
+        }
+        .line2 div {
+          width: 30%;
+        }
+        .line2 i {
+          font-size: 30px;
+        }
+        .hide a {
+          display: none;
+        }
+        .yoo {
+          display: flex;
+          position: absolute;
+          right: 0;
+        }
+      }
+      @media (max-width: 450px) {
+        .time {
+          margin-bottom: 50%;
+        }
+        .realTime {
+          font-size: 21vw;
+          font-weight: 600;
+        }
+        .date {
+          font-size: 9vw;
+          font-weight: 400;
+        }
+      }
+      .settings-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.settings-dropdown button {
+  background-color: transparent;
+  border: 1px solid #ffcc00;
+  color: #ffcc00;
+  padding: 10px 15px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.settings-dropdown .dropdown-content {
+  display: none;
+  position: absolute;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  min-width: 150px;
+  list-style: none;
+  padding: 10px 0;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  z-index: 10;
+}
+
+.settings-dropdown .dropdown-content li {
+  text-align: center;
+  padding: 8px;
+}
+
+.settings-dropdown .dropdown-content li button {
+  background: none;
+  border: none;
+  color: white;
+  width: 100%;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.settings-dropdown .dropdown-content li button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+
+.settings-dropdown.active .dropdown-content {
+  display: block;
+}
+
+    </style>
+  </head>
+  <body>
+    <div class="navbar">
+      <div class="sidebar">
+        <ul>
+          <li>
+            <button onclick="hideSidebar()">
+              <i class="fa-solid fa-xmark"> </i>
+            </button>
+          </li>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="index2.html">Forecast/Maps</a></li>
+          <li><a href="alert.html">Alerts</a></li>
+          <li><a href="">Settings</a></li>
+        </ul>
+      </div>
+
+      <div class="hide">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="index2.html">Forecast/Maps</a></li>
+          <li><a href="alert.html">Alerts</a></li>
+          
+
+          <li class="settings-dropdown">
+            <button onclick="toggleSettingsDropdown()">Settings <i class="fa-solid fa-caret-down"></i></button>
+            <ul class="dropdown-content">
+              <li><button onclick="toggleDarkMode()">Dark Mode</button></li>
+              <li><button onclick="toggleLightMode()">Light Mode</button></li>
+            </ul>
+          </li>
+          
+
+
+
+          <li>
+            <button onclick="showSidebar()" class="yoo">
+              <i class="fa-solid fa-bars"></i>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="location" style="margin-left: 2%; font-weight: 600">
+      location
+    </div>
+    <div class="time">
+      <div class="realTime">10:22<span style="font-size: 3vw">AM</span></div>
+      <div class="date">MON, May, 25th</div>
+    </div>
+    <div class="container">
+      <div class="line1">
+        <div class="one">
+          <i
+            class="fa-solid fa-sun"
+            style="font-size: 100px; color: #ffcc00"
+          ></i>
+          <p style="font-size: 2vw">Sunny</p>
+        </div>
+        <div class="two">
+          <h1 style="font-size: 3vw; font-weight: 700">Today</h1>
+          <h3 style="font-weight: 900; font-size: 4vw">+25...29&deg;C</h3>
+        </div>
+
+        <div class="three" style="font-weight: 500; font-size: 3vw">
+          <p>RealFeel 23&deg;C</p>
+          <p>Humidity 61%</p>
+          <p>Wind 10km/h</p>
+        </div>
+      </div>
+      <hr style="width: 73vw; margin: 10px auto" />
+      <div class="line2">
+        <div class="tue">
+          <h1>TUE</h1>
+          <i class="fa-solid fa-cloud"></i>
+          <p>Cloudy</p>
+          <p>+22 &deg;C</p>
+        </div>
+
+        <div class="wed">
+          <h1>WED</h1>
+          <i class="fa-solid fa-cloud"></i>
+          <p>Cloudy</p>
+          <p>+22 &deg;C</p>
+        </div>
+
+        <div class="thur">
+          <h1>THUR</h1>
+          <i class="fa-solid fa-cloud-sun"></i>
+          <p>Partly</p>
+          <p>+22 &deg;C</p>
+        </div>
+
+        <div class="fri">
+          <h1>FRI</h1>
+          <i class="fa-solid fa-cloud-rain"></i>
+          <p>Rainy</p>
+          <p>+22 &deg;C</p>
+        </div>
+        <div class="sart">
+          <h1>SAT</h1>
+          <i class="fa-solid fa-sun"></i>
+          <p>Sunny</p>
+          <p>+22 &deg;C</p>
+        </div>
+
+        <div class="sun">
+          <h1>SUN</h1>
+          <i class="fa-solid fa-cloud-showers-water"></i>
+          <p>Shower</p>
+          <p>+22 &deg;C</p>
+        </div>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
